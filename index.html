@@ -218,7 +218,7 @@
   
       // quantity selector
       const qtySelect = document.createElement('select');
-      for (let q = 1; q <= item.qty + 10; q++) { // allow editing up to current qty + extra stock
+      for (let q = 1; q <= item.availableQty; q++) {
         const option = document.createElement('option');
         option.value = q;
         option.innerText = q;
@@ -350,7 +350,7 @@
         const btn = document.createElement('button');
         btn.className = 'btn';
         btn.innerText = 'Add to cart';
-        btn.onclick = () => addToCart(item.Name, parseFloat(item['Price (€)']), btn);
+        btn.onclick = () => addToCart(item.Name, parseFloat(item['Price (€)']), btn, parseInt(item.Quantity));
         if ((item.Status || 'Available').toLowerCase() !== 'available') {
           btn.disabled = true;
           status.style.color = item.Status.toLowerCase() === 'sold' ? 'red' : 'orange';
