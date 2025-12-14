@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Private K-Pop Collection</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #fafafa;
+      color: #111;
+    }
+
+    header {
+      padding: 16px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1.1rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    .notice {
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      color: #555;
+      text-align: center;
+      background: #fff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card img {
+      width: 100%;
+      border-radius: 10px;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+    }
+
+    .title {
+      font-size: 0.85rem;
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    .price {
+      font-size: 0.8rem;
+      color: #444;
+      margin-top: 4px;
+    }
+
+    .status {
+      font-size: 0.75rem;
+      margin-top: 6px;
+      color: green;
+    }
+
+    .btn {
+      margin-top: auto;
+      padding: 8px;
+      font-size: 0.75rem;
+      border-radius: 999px;
+      border: 1px solid #111;
+      background: #fff;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  Private K-Pop Collection
+</header>
+
+<div class="notice">
+  Private collection sales. No automatic checkout.<br>
+  Items can be reserved or requested to buy.
+</div>
+
+<div class="grid">
+  <!-- Example product -->
+  <div class="card">
+    <img src="https://via.placeholder.com/300" alt="Photocard">
+    <div class="title">ATEEZ – San Photocard</div>
+    <div class="price">€8</div>
+    <div class="status">Available</div>
+    <button class="btn">Add to cart</button>
+  </div>
+</div>
+
+</body>
+</html>
