@@ -130,16 +130,24 @@
       flex: 1;
       overflow-y: auto;
       font-size: 0.8rem;
+      margin-bottom: 16px; /* extra margin so last item isn’t hidden */
     }
+
 
     .cart-item {
       margin-bottom: 12px;
     }
 
     .cart-footer {
+      position: sticky;
+      bottom: 0;
+      left: 0;
+      right: 0;
       padding: 16px;
-      border-top: 1px solid #eee;
       padding-bottom: calc(16px + env(safe-area-inset-bottom));
+      border-top: 1px solid #eee;
+      background: #fff;
+      z-index: 25; /* make sure it stays above items */
     }
 
 
