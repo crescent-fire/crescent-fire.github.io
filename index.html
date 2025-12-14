@@ -196,8 +196,8 @@
   </div>
   <div class="cart-items" id="cartItems"></div>
   <div class="cart-footer">
-    <button onclick="alert('Reserve flow comes next')">Reserve items</button>
-    <button onclick="alert('Request to buy flow comes next')">Request to buy</button>
+    <button onclick="openReserveForm()">Reserve items</button>
+    <button onclick="openRequestForm()">Request to buy</button>
   </div>
 </div>
 
@@ -220,6 +220,28 @@
       div.innerText = `${item.name} × ${item.qty} — €${item.price * item.qty}`;
       container.appendChild(div);
     });
+  }
+
+  function openReserveForm() {
+    if (cart.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    }
+    const cartItemsString = cart.map(item => `${item.name} × ${item.qty}`).join(', ');
+    const url = 'https://docs.google.com/forms/d/e/1FAIpQLScJ3QS9_ZqSyaa5iGHojkhEvwnVDCaQCt17YvdSyHkcxurwiw/viewform?usp=pp_url&entry.989077316='
+                + encodeURIComponent(cartItemsString);
+    window.open(url, '_blank');
+  }
+  
+  function openRequestForm() {
+    if (cart.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    }
+    const cartItemsString = cart.map(item => `${item.name} × ${item.qty}`).join(', ');
+    const url = 'https://docs.google.com/forms/d/e/1FAIpQLSfOY4xAG_FymrlzgcZb679AQ8vZkOrEt0d4KSbVGcS_3N11nw/viewform?usp=pp_url&entry.1451513929='
+                + encodeURIComponent(cartItemsString);
+    window.open(url, '_blank');
   }
 
   function toggleCart() {
