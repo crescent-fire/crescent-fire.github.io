@@ -194,9 +194,9 @@
 <script>
   let cart = [];
 
-  function addToCart(name, price, btn) {
-    const qty = btn.previousElementSibling.value;
-    cart.push({ name, price, qty });
+  function addToCart(name, price, btn, availableQty) {
+    const qty = parseInt(btn.previousElementSibling.value);
+    cart.push({ name, price, qty, availableQty });
     updateCart();
   }
 
@@ -216,13 +216,13 @@
       nameSpan.innerText = item.name + ' — ';
       div.appendChild(nameSpan);
   
-      // quantity selector
+      // quantity selector limited to available stock
       const qtySelect = document.createElement('select');
       for (let q = 1; q <= item.availableQty; q++) {
         const option = document.createElement('option');
         option.value = q;
         option.innerText = q;
-        if (q == item.qty) option.selected = true;
+        if (q === Number(item.qty)) option.selected = true;
         qtySelect.appendChild(option);
       }
       qtySelect.addEventListener('change', () => {
@@ -249,7 +249,6 @@
       container.appendChild(div);
     });
   }
-
 
   function openReserveForm() {
     if (cart.length === 0) {
