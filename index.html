@@ -378,8 +378,10 @@
         // quantity selector
         const select = document.createElement('select');
         select.className = 'qty';
-        const qty = parseInt(item.Quantity) || 1;
-        for (let i = 1; i <= qty; i++) {
+        const totalQty = parseInt(item.Quantity) || 0;
+        const reservedQty = parseInt(item['Reserved Quantity']) || 0;
+        const availableQty = Math.max(totalQty - reservedQty, 0);
+        for (let i = 1; i <= availableQty; i++) {
           const option = document.createElement('option');
           option.value = i;
           option.innerText = `Qty: ${i}`;
@@ -391,7 +393,13 @@
         const btn = document.createElement('button');
         btn.className = 'btn';
         btn.innerText = 'Add to cart';
-        btn.onclick = () => addToCart(item.Name, parseFloat(item['Price (€)']), btn, parseInt(item.Quantity));
+        btn.onclick = () =>
+          addToCart(
+            item.Name,
+            parseFloat(item['Price (€)']),
+            btn,
+            availableQty
+          );
         if ((item.Status || 'Available').toLowerCase() !== 'available') {
           btn.disabled = true;
           status.style.color = item.Status.toLowerCase() === 'sold' ? 'red' : 'orange';
@@ -399,6 +407,13 @@
         card.appendChild(btn);
   
         grid.appendChild(card);
+
+        if (availableQty === 0) {
+          btn.disabled = true;
+          status.innerText = 'Reserved';
+          status.style.color = 'orange';
+        }
+
       });
   
     } catch (err) {
