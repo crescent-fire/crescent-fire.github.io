@@ -242,12 +242,28 @@
 <script>
   const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOm_vXFesEFHehCK5RGPp9f_H0tGry3CS85NMVWMJpFBtjH8XqUSfj_W--B267VztKfgEXIw1URvNG/pub?gid=0&single=true&output=csv'; // your published CSV link
   
+  function parseCSV(text) {
+    const rows = text.trim().split('\n');
+    const headers = rows.shift().split(',').map(h => h.trim());
+  
+    return rows.map(row => {
+      const values = row.split(',');
+      const obj = {};
+      headers.forEach((header, i) => {
+        obj[header] = values[i] ? values[i].replace(/"/g,'').trim() : '';
+      });
+      return obj;
+    });
+  }
   async function generateProducts() {
     try {
       const res = await fetch(sheetUrl);
       const text = await res.text();
   
       const data = parseCSV(text);
+
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = '';
   
       data.forEach(item => {
         const card = document.createElement('div');
