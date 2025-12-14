@@ -243,18 +243,21 @@
   const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOm_vXFesEFHehCK5RGPp9f_H0tGry3CS85NMVWMJpFBtjH8XqUSfj_W--B267VztKfgEXIw1URvNG/pub?gid=0&single=true&output=csv'; // your published CSV link
   
   function parseCSV(text) {
-    const rows = text.trim().split('\n');
-    const headers = rows.shift().match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g).map(h => h.replace(/"/g,'').trim());
+    const lines = text.trim().split('\n');
+    const headers = lines.shift().match(/(?:\"([^\"]*(?:\"\"[^\"]*)*)\")|([^,]+)/g).map(h => h.replace(/^"|"$/g,'').replace(/""/g,'"').trim());
   
-    return rows.map(row => {
-      const values = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+    return lines.map(line => {
+      const matches = line.match(/(?:\"([^\"]*(?:\"\"[^\"]*)*)\")|([^,]+)/g);
       const obj = {};
       headers.forEach((header, i) => {
-        obj[header] = values[i] ? values[i].replace(/"/g,'').trim() : '';
+        let val = matches[i] || '';
+        val = val.replace(/^"|"$/g,'').replace(/""/g,'"').trim();
+        obj[header] = val;
       });
       return obj;
     });
   }
+
 
   async function generateProducts() {
     try {
