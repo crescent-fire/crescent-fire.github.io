@@ -400,9 +400,11 @@
             btn,
             availableQty
           );
-        if ((item.Status || 'Available').toLowerCase() !== 'available') {
+        if (availableQty === 0) {
           btn.disabled = true;
-          status.style.color = item.Status.toLowerCase() === 'sold' ? 'red' : 'orange';
+          status.innerText = item.Status || 'Unavailable';
+          status.style.color =
+            (item.Status || '').toLowerCase() === 'sold' ? 'red' : 'orange';
         }
         card.appendChild(btn);
   
