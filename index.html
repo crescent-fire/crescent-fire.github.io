@@ -194,9 +194,42 @@
 <script>
   let cart = [];
 
+  function showTempMessage(msg) {
+    let notice = document.createElement('div');
+    notice.innerText = msg;
+    notice.style.position = 'fixed';
+    notice.style.bottom = '80px';
+    notice.style.left = '50%';
+    notice.style.transform = 'translateX(-50%)';
+    notice.style.background = 'rgba(0,0,0,0.8)';
+    notice.style.color = '#fff';
+    notice.style.padding = '10px 16px';
+    notice.style.borderRadius = '8px';
+    notice.style.zIndex = '999';
+    notice.style.fontSize = '0.85rem';
+    document.body.appendChild(notice);
+  
+    setTimeout(() => {
+      notice.remove();
+    }, 3000); // disappears after 3 seconds
+  }
+
   function addToCart(name, price, btn, availableQty) {
-    const qty = parseInt(btn.previousElementSibling.value);
-    cart.push({ name, price, qty, availableQty });
+    const qtyToAdd = parseInt(btn.previousElementSibling.value);
+  
+    // find if item already exists in cart
+    const existing = cart.find(item => item.name === name);
+  
+    if (existing) {
+      if (existing.qty + qtyToAdd > availableQty) {
+        showTempMessage(`Cannot add more than ${availableQty} of "${name}"`);
+        return;
+      }
+      existing.qty += qtyToAdd;
+    } else {
+      cart.push({ name, price, qty: qtyToAdd, availableQty });
+    }
+  
     updateCart();
   }
 
