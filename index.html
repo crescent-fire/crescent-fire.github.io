@@ -176,17 +176,7 @@
 </div>
 
 <div class="grid">
-  <div class="card" id="product-1">
-      <img src="https://via.placeholder.com/300" alt="Photocard">
-      <div class="title">ATEEZ – San Photocard</div>
-      <div class="price">€8</div>
-      <div class="status">Available</div>
-      <select class="qty">
-        <option value="1">Qty: 1</option>
-        <option value="2">Qty: 2</option>
-      </select>
-      <button class="btn" onclick="addToCart('ATEEZ San PC', 8, this)">Add to cart</button>
-  </div>
+  <!-- Cards will be generated dynamically here -->
 </div>
 
 <div class="cart" id="cart">
@@ -250,14 +240,13 @@
 </script>
   
 <script>
-  async function updateLiveStatus() {
-    const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOm_vXFesEFHehCK5RGPp9f_H0tGry3CS85NMVWMJpFBtjH8XqUSfj_W--B267VztKfgEXIw1URvNG/pub?gid=0&single=true&output=csvE'; // ← replace this with your published CSV link
+  const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOm_vXFesEFHehCK5RGPp9f_H0tGry3CS85NMVWMJpFBtjH8XqUSfj_W--B267VztKfgEXIw1URvNG/pub?gid=0&single=true&output=csv'; // your published CSV link
   
+  async function generateProducts() {
     try {
       const res = await fetch(sheetUrl);
       const text = await res.text();
   
-      // parse CSV into array of objects
       const lines = text.split('\n').map(line => line.split(','));
       const headers = lines[0];
       const data = lines.slice(1).map(line => {
@@ -266,22 +255,58 @@
         return obj;
       });
   
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = ''; // clear any old content
+  
       data.forEach(item => {
-        const card = document.getElementById(`product-${item.ID}`);
-        if (card) {
-          const statusDiv = card.querySelector('.status');
-          statusDiv.innerText = item.Status;
-          if (item.Status.toLowerCase() === 'sold') {
-            statusDiv.style.color = 'red';
-            card.querySelector('.btn').disabled = true;
-          } else if (item.Status.toLowerCase() === 'reserved') {
-            statusDiv.style.color = 'orange';
-            card.querySelector('.btn').disabled = true;
-          } else {
-            statusDiv.style.color = 'green';
-            card.querySelector('.btn').disabled = false;
-          }
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.id = `product-${item.ID}`;
+  
+        const img = document.createElement('img');
+        img.src = item['Photo URL'] || 'https://via.placeholder.com/300';
+        img.alt = item.Name;
+        card.appendChild(img);
+  
+        const title = document.createElement('div');
+        title.className = 'title';
+        title.innerText = item.Name;
+        card.appendChild(title);
+  
+        const price = document.createElement('div');
+        price.className = 'price';
+        price.innerText = `€${item['Price (€)']}`;
+        card.appendChild(price);
+  
+        const status = document.createElement('div');
+        status.className = 'status';
+        status.innerText = item.Status || 'Available';
+        card.appendChild(status);
+  
+        // quantity selector
+        const select = document.createElement('select');
+        select.className = 'qty';
+        const qty = parseInt(item.Quantity) || 1;
+        for (let i = 1; i <= qty; i++) {
+          const option = document.createElement('option');
+          option.value = i;
+          option.innerText = `Qty: ${i}`;
+          select.appendChild(option);
         }
+        card.appendChild(select);
+  
+        // add to cart button
+        const btn = document.createElement('button');
+        btn.className = 'btn';
+        btn.innerText = 'Add to cart';
+        btn.onclick = () => addToCart(item.Name, parseFloat(item['Price (€)']), btn);
+        if ((item.Status || 'Available').toLowerCase() !== 'available') {
+          btn.disabled = true;
+          status.style.color = item.Status.toLowerCase() === 'sold' ? 'red' : 'orange';
+        }
+        card.appendChild(btn);
+  
+        grid.appendChild(card);
       });
   
     } catch (err) {
@@ -290,10 +315,10 @@
   }
   
   // run immediately
-  updateLiveStatus();
+  generateProducts();
   // refresh every 60 seconds
-  setInterval(updateLiveStatus, 60000);
- </script>
+  setInterval(generateProducts, 60000);
+</script>
   
 </body>
 </html>
