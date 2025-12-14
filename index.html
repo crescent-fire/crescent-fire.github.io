@@ -201,13 +201,59 @@
   }
 
   function updateCart() {
-    document.getElementById('cartCount').innerText = cart.length;
-    const container = document.getElementById('cartItems');
-    container.innerHTML = '';
-    cart.forEach(item => {
-      const div = document.createElement('div');
-      div.className = 'cart-item';
-      div.innerText = `${item.name} × ${item.qty} — €${item.price * item.qty}`;
+        document.getElementById('cartCount').innerText = cart.length;
+        const container = document.getElementById('cartItems');
+        container.innerHTML = '';
+        cart.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'cart-item';
+          function updateCart() {
+      document.getElementById('cartCount').innerText = cart.length;
+      const container = document.getElementById('cartItems');
+      container.innerHTML = '';
+    
+      cart.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+    
+        // item name
+        const nameSpan = document.createElement('span');
+        nameSpan.innerText = item.name + ' — ';
+        div.appendChild(nameSpan);
+    
+        // quantity selector
+        const qtySelect = document.createElement('select');
+        for (let i = 1; i <= 10; i++) { // max 10 for example
+          const option = document.createElement('option');
+          option.value = i;
+          option.innerText = i;
+          if (i == item.qty) option.selected = true;
+          qtySelect.appendChild(option);
+        }
+        qtySelect.onchange = () => {
+          item.qty = parseInt(qtySelect.value);
+          updateCart();
+        };
+        div.appendChild(qtySelect);
+    
+        // price
+        const priceSpan = document.createElement('span');
+        priceSpan.innerText = ` — €${(item.price * item.qty).toFixed(2)}`;
+        div.appendChild(priceSpan);
+    
+        // remove button
+        const removeBtn = document.createElement('button');
+        removeBtn.innerText = '✕';
+        removeBtn.style.marginLeft = '8px';
+        removeBtn.onclick = () => {
+          cart.splice(index, 1);
+          updateCart();
+        };
+        div.appendChild(removeBtn);
+    
+        container.appendChild(div);
+      });
+    }
       container.appendChild(div);
     });
   }
