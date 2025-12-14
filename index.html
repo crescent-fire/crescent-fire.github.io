@@ -176,16 +176,16 @@
 </div>
 
 <div class="grid">
-  <div class="card">
-    <img src="https://via.placeholder.com/300" alt="Photocard">
-    <div class="title">ATEEZ – San Photocard</div>
-    <div class="price">€8</div>
-    <div class="status">Available</div>
-    <select class="qty">
-      <option value="1">Qty: 1</option>
-      <option value="2">Qty: 2</option>
-    </select>
-    <button class="btn" onclick="addToCart('ATEEZ San PC', 8, this)">Add to cart</button>
+  <div class="card" id="product-1">
+      <img src="https://via.placeholder.com/300" alt="Photocard">
+      <div class="title">ATEEZ – San Photocard</div>
+      <div class="price">€8</div>
+      <div class="status">Available</div>
+      <select class="qty">
+        <option value="1">Qty: 1</option>
+        <option value="2">Qty: 2</option>
+      </select>
+      <button class="btn" onclick="addToCart('ATEEZ San PC', 8, this)">Add to cart</button>
   </div>
 </div>
 
@@ -248,6 +248,52 @@
     document.getElementById('cart').classList.toggle('open');
   }
 </script>
-
+  
+<script>
+  async function updateLiveStatus() {
+    const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOm_vXFesEFHehCK5RGPp9f_H0tGry3CS85NMVWMJpFBtjH8XqUSfj_W--B267VztKfgEXIw1URvNG/pub?gid=0&single=true&output=csvE'; // ← replace this with your published CSV link
+  
+    try {
+      const res = await fetch(sheetUrl);
+      const text = await res.text();
+  
+      // parse CSV into array of objects
+      const lines = text.split('\n').map(line => line.split(','));
+      const headers = lines[0];
+      const data = lines.slice(1).map(line => {
+        const obj = {};
+        headers.forEach((h, i) => obj[h.trim()] = line[i]);
+        return obj;
+      });
+  
+      data.forEach(item => {
+        const card = document.getElementById(`product-${item.ID}`);
+        if (card) {
+          const statusDiv = card.querySelector('.status');
+          statusDiv.innerText = item.Status;
+          if (item.Status.toLowerCase() === 'sold') {
+            statusDiv.style.color = 'red';
+            card.querySelector('.btn').disabled = true;
+          } else if (item.Status.toLowerCase() === 'reserved') {
+            statusDiv.style.color = 'orange';
+            card.querySelector('.btn').disabled = true;
+          } else {
+            statusDiv.style.color = 'green';
+            card.querySelector('.btn').disabled = false;
+          }
+        }
+      });
+  
+    } catch (err) {
+      console.error('Failed to fetch inventory:', err);
+    }
+  }
+  
+  // run immediately
+  updateLiveStatus();
+  // refresh every 60 seconds
+  setInterval(updateLiveStatus, 60000);
+ </script>
+  
 </body>
 </html>
