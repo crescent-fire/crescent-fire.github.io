@@ -244,10 +244,10 @@
   
   function parseCSV(text) {
     const rows = text.trim().split('\n');
-    const headers = rows.shift().split(',').map(h => h.trim());
+    const headers = rows.shift().match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g).map(h => h.replace(/"/g,'').trim());
   
     return rows.map(row => {
-      const values = row.split(',');
+      const values = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
       const obj = {};
       headers.forEach((header, i) => {
         obj[header] = values[i] ? values[i].replace(/"/g,'').trim() : '';
@@ -255,6 +255,7 @@
       return obj;
     });
   }
+
   async function generateProducts() {
     try {
       const res = await fetch(sheetUrl);
@@ -271,10 +272,8 @@
         card.id = `product-${item.ID}`;
   
         const img = document.createElement('img');
-        img.src =
-          item['Photo URL'] && item['Photo URL'].startsWith('http')
-            ? item['Photo URL']
-            : 'https://via.placeholder.com/300';
+        let photoURL = item['Photo URL'] ? item['Photo URL'].trim() : '';
+        img.src = photoURL.startsWith('http') ? photoURL : 'https://via.placeholder.com/300';
         img.alt = item.Name;
         card.appendChild(img);
   
