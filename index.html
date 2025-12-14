@@ -247,16 +247,7 @@
       const res = await fetch(sheetUrl);
       const text = await res.text();
   
-      const lines = text.split('\n').map(line => line.split(','));
-      const headers = lines[0];
-      const data = lines.slice(1).map(line => {
-        const obj = {};
-        headers.forEach((h, i) => obj[h.trim()] = line[i]);
-        return obj;
-      });
-  
-      const grid = document.getElementById('productGrid');
-      grid.innerHTML = ''; // clear any old content
+      const data = parseCSV(text);
   
       data.forEach(item => {
         const card = document.createElement('div');
@@ -264,7 +255,10 @@
         card.id = `product-${item.ID}`;
   
         const img = document.createElement('img');
-        img.src = item['Photo URL'] || 'https://via.placeholder.com/300';
+        img.src =
+          item['Photo URL'] && item['Photo URL'].startsWith('http')
+            ? item['Photo URL']
+            : 'https://via.placeholder.com/300';
         img.alt = item.Name;
         card.appendChild(img);
   
