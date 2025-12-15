@@ -400,21 +400,21 @@
             btn,
             availableQty
           );
-        if (availableQty === 0) {
-          btn.disabled = true;
-          status.innerText = item.Status || 'Unavailable';
-          status.style.color =
-            (item.Status || '').toLowerCase() === 'sold' ? 'red' : 'orange';
-        }
         card.appendChild(btn);
   
-        grid.appendChild(card);
-
-        if (availableQty === 0) {
+        if (totalQty === 0) {
+          status.innerText = 'Sold';
+          status.style.color = 'red';
           btn.disabled = true;
+        } else if (availableQty === 0 && reservedQty > 0) {
           status.innerText = 'Reserved';
           status.style.color = 'orange';
+          btn.disabled = true;
+        } else {
+          status.innerText = 'Available';
+          status.style.color = 'green';
         }
+        grid.appendChild(card);
 
       });
   
